@@ -1,0 +1,6 @@
+{
+    "vcenter_server" : "vcenter.nicolashall.local",
+    "vm_folder" : "BASEVM",
+    "esxi_host" : "192.168.7.30",
+    "default_network" : "480-WAN"
+}
