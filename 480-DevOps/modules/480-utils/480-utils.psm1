@@ -1,5 +1,5 @@
 function 480Banner(){
-    Write-Host "Hello SYS480-DevOps"
+    Write-Host "SYS480 DevOps"
 }
 
 function 480Connect([string] $server){
@@ -36,11 +36,15 @@ function Select-VM([string] $folder){
             Write-Host [$index] $vm.Name
             $index+=1
         }
+        
         $pick_index = Read-Host("Which index number [x] do you want to pick?")
-        # To do: need to deal with invalid index error (can make this a function)
         $selected_vm = $vms[$pick_index -1]
-        Write-Host "You picked" $selected_vm.Name
-        # This is an actual VM object that you can interact with
+        if(-not($selected_vm -in $vms)){
+            Write-Host "Invalid Index: $pick_index" -ForegroundColor "Red"
+        }
+        else{
+            Write-Host "You picked" $selected_vm.Name
+        }
         return $selected_vm
     }
     catch {
