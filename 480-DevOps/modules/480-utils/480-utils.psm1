@@ -51,3 +51,20 @@ function Select-VM([string] $folder){
         Write-Host "Invalid Folder: $folder" -ForegroundColor "Red"
     }
 }
+
+function CreateLinkedClone(){
+    Write-Host "Create a linked clone using an existing Base image of a VM within your ESXi"
+    $vm = Read-Host -Prompt "Enter the name of the VM"
+    $snapshot = Get-Snapshot -VM $vm -Name "Base"
+    $select_vmhost = Read-Host -Prompt "Enter the IP or Hostname of the ESXi"
+    $vmhost = Get-VMHost -Name $select_vmhost
+    $select_ds = Read-Host -Prompt "Enter the name of the datastore"
+    $ds = Get-DataStore -Name $select_ds
+    $linkedClone = "{0}.linked" -f $vm.name
+    $linkedvm = New-VM -LinkedClone -Name $linkedClone -VM $vm -ReferenceSnapshot $snapshot -VMHost $vmhost -DataStore $ds
+    $newvmname = Read-Host "Enter the name of the new VM linked clone"
+    $newvm = New-VM -Name $newvmname -VM $linkedvm -VMHost $vmhost -DataStore $ds
+
+    # Clean up
+    $linkedvm | Remove-VM
+}
