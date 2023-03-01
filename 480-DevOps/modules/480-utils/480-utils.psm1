@@ -68,3 +68,59 @@ function CreateLinkedClone(){
     # Clean up
     $linkedvm | Remove-VM
 }
+
+function Get-IP([string] $vmName, [string] $vcenter_server){
+    # Check if connected
+    $conn = $global:DefaultVIServer
+    if($conn){
+        $msg = "Already connected to: {0}" -f $conn
+        Write-Host -ForegroundColor Green $msg
+    } else{
+        $conn = Connect-VIServer -Server $server
+    }
+
+    $get_ip = Get-VM $vmName | Select-Object @{N=”IP Address”;E={@($_.guest.IPAddress[0])}} | Select-Object -ExpandProperty "IP Address"
+    $get_mac = Get-NetworkAdapter $vmName | Select-Object MacAddress
+    Write-Host $vmName, $get_ip, $get_mac
+}
+
+function New-Network([string] $networkName, [string] $esxi_host, [string] $vcenter_server){
+    # Check if connected
+    $conn = $global:DefaultVIServer
+    if($conn){
+        $msg = "Already connected to: {0}" -f $conn
+        Write-Host -ForegroundColor Green $msg
+    } else{
+        $conn = Connect-VIServer -Server $server
+    }
+
+    $create_vswitch = New-VirtualSwitch -Name $networkName -VMHost $esxi_host
+    $create_portgroup = New-VirtualPortGroup -VirtualSwitch $networkName -Name $networkName
+    Write-Host "Created vSwitch: $networkName"
+    Write-Host "Created Port Group: $networkName"
+}
+
+function StartVM([string] $vmName, [string] $esxi_host){
+    $start_VM = Start-VM -VM $vmName -Server $esxi_host
+    Write-Output "$vmName has been started"
+}
+
+function StopVM([string] $vmName, [string] $esxi_host){
+    $stop_VM = Stop-VM -VM $vmName -Server $esxi_host
+    Write-Output "$vmName has been stopped"
+}
+
+function Set-Network([string] $vmName, [string] $networkName, [string] $esxi_host, [string] $vcenter_server){
+    # Check if connected
+    $conn = $global:DefaultVIServer
+    if($conn){
+        $msg = "Already connected to: {0}" -f $conn
+        Write-Host -ForegroundColor Green $msg
+    } else{
+        $conn = Connect-VIServer -Server $server
+    }
+
+    
+
+
+}
