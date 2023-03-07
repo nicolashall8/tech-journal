@@ -80,7 +80,7 @@ function Get-IP([string] $vmName, [string] $vcenter_server){
     }
 
     $get_ip = Get-VM $vmName | Select-Object @{N=”IP Address”;E={@($_.guest.IPAddress[0])}} | Select-Object -ExpandProperty "IP Address"
-    $get_mac = Get-NetworkAdapter $vmName | Select-Object MacAddress
+    $get_mac = Get-NetworkAdapter $vmName | Select-Object @{N=”MacAddress”;E={@($_.MacAddress)}} | Select-Object -ExpandProperty "MacAddress"
     Write-Host $vmName, $get_ip, $get_mac
 }
 
@@ -102,15 +102,15 @@ function New-Network([string] $networkName, [string] $esxi_host, [string] $vcent
 
 function StartVM([string] $vmName, [string] $esxi_host){
     $start_VM = Start-VM -VM $vmName -Server $esxi_host
-    Write-Output "$vmName has been started"
+    return $start_VM
 }
 
 function StopVM([string] $vmName, [string] $esxi_host){
     $stop_VM = Stop-VM -VM $vmName -Server $esxi_host
-    Write-Output "$vmName has been stopped"
+    return $stop_VM
 }
 
-function Set-Network([string] $vmName, [string] $networkName, [string] $esxi_host, [string] $vcenter_server){
+function Set-Network([string] $vmName, [string] $networkName, [string] $esxiHost){
     # Check if connected
     $conn = $global:DefaultVIServer
     if($conn){
@@ -119,8 +119,17 @@ function Set-Network([string] $vmName, [string] $networkName, [string] $esxi_hos
     } else{
         $conn = Connect-VIServer -Server $server
     }
-
     
-
-
+    $networkAdapters = Get-VM $vmName | Get-NetworkAdapter | Select-Object @{N=”Network Adapter”;E={@($_.Name)}} | Select-Object -ExpandProperty "Network Adapter"
+    Write-Output "Here are the available network adapters for $vmName"
+    Write-Output $networkAdapters
+    $selectNetAdapter = Read-Host "Please select a network adapter to change"
+    try{
+        $getNetAdapter = Get-VM $vmName | Get-NetworkAdapter -Name $selectNetAdapter
+        $setNetwork = Set-NetworkAdapter -NetworkAdapter $getNetAdapter -Portgroup $networkName
+        return $setNetwork
+    }
+    catch {
+        Write-Host -ForegroundColor Red "Invalid network adapter: $selectNetAdapter"
+    }
 }
