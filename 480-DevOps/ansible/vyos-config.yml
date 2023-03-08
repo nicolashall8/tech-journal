@@ -1,0 +1,23 @@
+# Playbook performs initial configuration for blue1-fw
+- name: vyos network config
+  hosts: vyos
+  vars_prompt:
+
+  - name: password
+    prompt: enter your new vyos password
+    private: true
+  tasks:
+    - name: set the password hash fact
+      set_fact:
+        password_hash: "{{ password | password_hash('sha256') }}"
+    - name: load vyos config from template
+      become: yes
+      template:
+        src: files/vyos/config.boot.j2
+        dest: /config/config.boot
+        mode: "0775"
+        owner: root
+        group: vyattacfg
+    - name: bounce and end
+      become: yes
+      shell: nohup bash -c "/usr/bin/sleep 5 && /usr/sbin/shutdown -r now" &
