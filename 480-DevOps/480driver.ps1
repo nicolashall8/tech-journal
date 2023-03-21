@@ -8,8 +8,9 @@ Import-Module '/home/nicolas/tech-journal/480-DevOps/modules/480-utils/480-utils
 #Write-Host("Selecting your VM...")
 #Select-VM -folder "BASEVM"
 
-#Get-IP -vmName super20-xubuntu-wan -vcenter_server vcenter.nicolashall.local
-#New-VirtualSwitch -Name TEST-LAN -VMHost 192.168.7.30
+#Get-IP -vmName blue1-fw -vcenter_server vcenter.nicolashall.local
+#New-VirtualSwitch -Name TESTING -VMHost 192.168.7.30
+#Get-VM
 #CreateLinkedClone
 #StartVM -vmName blue1-fw -esxi_host 192.168.7.30
 #StopVM -vmName blue1-fw -esxi_host 192.168.7.30
