@@ -3,7 +3,7 @@
   hosts: vyos
   tasks:
   - name: Retrieve VyOS version info
-    vyos command:
+    vyos_command:
       commands: show version
     register: version
   - debug:
@@ -13,7 +13,7 @@
     vyos_config:
       save: yes
       lines:
-      - set service dhcp-server global-parameters 'local-address {{ lan_ip }}:'
+      - set service dhcp-server global-parameters 'local-address {{ lan_ip }};'
       - set service dhcp-server shared-network-name {{ shared_network }} authoritative
       - set service dhcp-server shared-network-name {{ shared_network }} subnet {{ lan }} default-router '{{ lan_ip }}'
       - set service dhcp-server shared-network-name {{ shared_network }} subnet {{ lan }} name-server '{{ dhcp_name_server }}'

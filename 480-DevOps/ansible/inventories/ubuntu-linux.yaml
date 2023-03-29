@@ -1,0 +1,21 @@
+linux:
+  hosts:
+  children:
+    ubuntu:
+      hosts:
+        10.0.5.78:
+          hostname: ubuntu-1
+          lan_ip: 10.0.5.30
+        # Need to do the solution found here to get a unique DHCP address for ubuntu-2 https://kb.vmware.com/s/article/82229
+          hostname: ubuntu-2
+          lan_ip: 10.0.5.31
+      vars:
+        device: ens160
+
+  vars:
+    public_key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCn315Z3TvE/AFgEH4dgM9+7F9zMsA3zoeXv72mqDxxu9zj+trITF+Cojzgs44eXWd9qkTVQQ4AbogNhXTDya55WU9yiB2h9iZngpbxyo3VquFEg/sxcmIuHilUt9ZlRJMl5nsLb0gA0Q9urRVQI3stLWYNxXy5uDI2p4u6x4GiKEmDwHDwmFPqwJ+M4Lq56joDrZbSjpDpt6h+QrAARaX7ycZ/ZM8GyfOFbsWoUEz0hBdEZK/GuwOeN5SIbiPmgt3wUnc05WusDewvL7S0wVt+P/H/4dW9XcAFJgSkQYsGWzGsuZvsYbTHuWcGLjsF5H7Gi1migrdxajtQp5EAr2Naykfhm1f0gPL+9Kv2fukyIAvTFZUk78dKyQTcceqkSi1ACVD+vOpYYAFds+FLDQ/Dqfk//Huw4TreQsy095LRPIuWiIPTqgznVPV1xOSOqYEW6BiAMTiwKV8xWBsSbEhUM0C5mDGrgtGV0T86mNa2t9gwYnd7VL4RPoR7L3U5hOM= nicolas@super20-xubuntu-wan"
+    ansible_user: rangeuser
+    prefix: 24
+    gateway: 10.0.5.2
+    name_server: 10.0.5.5
+    domain: blue1.local
