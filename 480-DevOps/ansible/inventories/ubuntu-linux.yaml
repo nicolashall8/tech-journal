@@ -6,7 +6,7 @@ linux:
         10.0.5.78:
           hostname: ubuntu-1
           lan_ip: 10.0.5.30
-        # Need to do the solution found here to get a unique DHCP address for ubuntu-2 https://kb.vmware.com/s/article/82229
+        10.0.5.79:
           hostname: ubuntu-2
           lan_ip: 10.0.5.31
       vars:
