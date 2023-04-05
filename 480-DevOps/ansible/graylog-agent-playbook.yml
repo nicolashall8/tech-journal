@@ -1,0 +1,18 @@
+- name: Graylog Agent Configuration
+  hosts: agent
+  remote_user: rock
+  become: True
+  tasks:
+
+    - name: Copy Over Rsyslog Conf 
+      template:
+        src: ~/tech-journal/480-DevOps/ansible/files/rocky/rsyslog-main.j2
+        dest: /etc/rsyslog.d/rsyslog-main.conf
+
+    - name: Add Local Firewall Rules
+      shell: |
+        sudo firewall-cmd --add-port=1514/udp --permanent &&
+        sudo firewall-cmd --reload
+    
+    - name: Restart Rsyslog Service
+      shell: sudo systemctl restart rsyslog.service

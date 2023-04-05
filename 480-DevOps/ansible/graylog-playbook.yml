@@ -1,6 +1,6 @@
 # Install Graylog Server on Red Hat machines
 - name: Graylog Server Installation
-  hosts: all
+  hosts: server
   remote_user: rock
   become: True
   tasks:

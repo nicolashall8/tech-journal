@@ -1,6 +1,6 @@
-server:
+agent:
   hosts:
   children:
     rocky:
       hosts:
-        10.0.5.10:
+        10.0.5.11:
