@@ -1,0 +1,65 @@
+# Install Graylog Server on Red Hat machines
+- name: Graylog Server Installation
+  hosts: all
+  remote_user: rock
+  become: True
+  tasks:
+
+    - name: Prepare MongoDB Repo File
+      template:
+        src: ~/tech-journal/480-DevOps/ansible/files/rocky/mongodb-org.j2
+        dest: /etc/yum.repos.d/mongodb-org.repo
+      
+    - name: Install MongoDB
+      shell: |
+        sudo yum update -y &&
+        sudo yum install mongodb-org -y &&
+        sudo systemctl daemon-reload &&
+        sudo systemctl enable mongod.service &&
+        sudo systemctl start mongod.service
+  
+    - name: Prepare Elasticsearch Key
+      shell: |
+        update-crypto-policies --set DEFAULT:SHA1
+        sudo rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch
+
+    - name: Prepare Elasticsearch Repo File
+      template:
+        src: ~/tech-journal/480-DevOps/ansible/files/rocky/elasticsearch.j2
+        dest: /etc/yum.repos.d/elasticsearch.repo
+    
+    - name: Install Elasticsearch
+      shell: |
+        sudo yum install elasticsearch-oss -y &&
+        echo "cluster.name: graylog" | sudo tee -a /etc/elasticsearch/elasticsearch.yml &&
+        echo "action.auto_create_index: false" | sudo tee -a /etc/elasticsearch/elasticsearch.yml &&
+        sudo systemctl daemon-reload &&
+        sudo systemctl enable elasticsearch.service &&
+        sudo systemctl start elasticsearch.service 
+
+    - name: Install Graylog
+      shell: |
+        sudo rpm -Uvh 'https://packages.graylog2.org/repo/packages/graylog-5.0-repository_latest.rpm' &&
+        sudo yum install graylog-server -y &&
+        sudo sed -i 's/\(^password_secret *= *\)\(.*\)/\1replace_with_password_secret/' /etc/graylog/server/server.conf &&
+        sudo sed -i 's/\(^root_password_sha2 *= *\)\(.*\)/\1replace_with_root_password_sha256/' /etc/graylog/server/server.conf &&
+        sudo sed -i 's/^#*\s*http_bind_address\s*=.*/http_bind_address = 10.0.5.10:9000/' /etc/graylog/server/server.conf
+        
+    - name: Start Graylog Server
+      shell: |
+        sudo systemctl daemon-reload &&
+        sudo systemctl enable graylog-server.service &&
+        sudo systemctl start graylog-server.service
+
+    - name: SELinux Configuration
+      shell: |
+        sudo setsebool -P httpd_can_network_connect 1 &&
+        sudo dnf install policycoreutils-python-utils-3.4-4.el9.noarch -y &&
+        sudo semanage port -a -t mongod_port_t -p tcp 27017
+
+    - name: Create local firewall rules
+      shell: |
+        sudo firewall-cmd --add-port=9000/tcp --permanent &&
+        sudo firewall-cmd --reload
+        
+  

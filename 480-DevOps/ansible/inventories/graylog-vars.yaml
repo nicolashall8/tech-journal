@@ -1,0 +1,6 @@
+all:
+  hosts:
+  children:
+    rocky:
+      hosts:
+        10.0.5.10:
