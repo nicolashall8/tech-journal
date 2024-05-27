@@ -17,7 +17,7 @@
         Results are organized and output is directed to a txt file         
                                                                            
     .Example                                                               
-        .\IncidentResponseTriage.ps1                                       
+        .\WindowsSystemTriage.ps1                                       
                                                                            
         $OutPutFile = "C:\Users\bob\Desktop\triage-05-27-24-win-wks-01.txt"
 #>                                                                         
