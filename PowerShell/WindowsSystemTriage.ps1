@@ -27,7 +27,7 @@
 $OutputFile = Read-Host "Enter the full path of the new output file"
 
 # Get system info
-$ProcessesHeader = "====================System Info====================" | Out-File -Append -FilePath $OutputFile
+$SystemInfoHeader = "====================System Info====================" | Out-File -Append -FilePath $OutputFile
 Get-ComputerInfo | Select-Object CsDNSHostName,CsDomain,WindowsProductName,WindowsCurrentVersion,OsLocalDateTime | Out-File -Append -FilePath $OutputFile
 
 # List all running processes and path for each process
